@@ -11,8 +11,12 @@ public class User extends Entity {
         super(id, createdAt, createdBy);
     }
 
+    public User(final String createdBy) {
+        super(createdBy);
+    }
+
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -20,7 +24,7 @@ public class User extends Entity {
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
@@ -28,10 +32,28 @@ public class User extends Entity {
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        User user = (User) o;
+
+        return this.email.equals(user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + this.email.hashCode();
+        return result;
     }
 }
