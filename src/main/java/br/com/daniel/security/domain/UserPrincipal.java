@@ -1,7 +1,5 @@
 package br.com.daniel.security.domain;
 
-import br.com.daniel.domain.User;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 

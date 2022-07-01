@@ -47,4 +47,35 @@ public class RoleRepository {
         return new HashSet<>(results);
     }
 
+    public Set<Role> findAllRoles() {
+        final List<Role> results = this.jdbcTemplate.query(
+                RoleRepositoryStatements.SELECT_ALL,
+                (rs, rowNum) -> new Role(
+                        rs.getString("id"),
+                        rs.getDate("created_at"),
+                        rs.getString("created_by"),
+                        rs.getDate("updated_at"),
+                        rs.getString("updated_by"),
+                        rs.getString("name")
+                )
+        );
+
+        return new HashSet<>(results);
+    }
+
+    public Role getAdminRole() {
+        final List<Role> results = this.jdbcTemplate.query(
+                RoleRepositoryStatements.SELECT_ADMIN_ROLE,
+                (rs, rowNum) -> new Role(
+                        rs.getString("id"),
+                        rs.getDate("created_at"),
+                        rs.getString("created_by"),
+                        rs.getDate("updated_at"),
+                        rs.getString("updated_by"),
+                        rs.getString("name")
+                )
+        );
+
+        return results.get(0);
+    }
 }

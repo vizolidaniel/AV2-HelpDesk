@@ -43,10 +43,6 @@ Obs.: O deploy remoto só ocorre quando você tem o Heroku CLI instalado localme
 
 ---
 
-#### O [UML de relacionamento de classes](https://github.com/douglasffilho/HelpDesk/blob/main/HelpDeskEntityUML.drawio) pode ser aberto com a ferramenta [draw.io](https://draw.io) ou [APP Diagrams](https://app.diagrams.net/)
-
----
-
 #### O projeto tem foco em conter implementações de tudo que é aprendido em POO Avançado:
 
 - CRUD Web

@@ -6,12 +6,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@Authorized(roles = "SERVICE_DESK")
 @RequestMapping("/service-desk")
 public class ServiceDeskController {
 
     @GetMapping
+    @Authorized(roles = "SERVICE_DESK")
     public String home() {
-        return "service-desk";
+        return "service-desk/index";
+    }
+
+    @GetMapping("/requests")
+    @Authorized(roles = "CLIENT")
+    public String requests() {
+        return "service-desk/requests";
     }
 }

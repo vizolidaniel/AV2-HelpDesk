@@ -6,10 +6,13 @@ public abstract class WebException extends RuntimeException {
     private final HttpStatus status;
     private final String logref;
 
-    public WebException(final String message, final String logref, final HttpStatus status) {
+    private final String redirect;
+
+    public WebException(final String message, final String logref, final HttpStatus status, final String redirect) {
         super(message);
         this.status = status;
         this.logref = logref;
+        this.redirect = redirect;
     }
 
     public HttpStatus getStatus() {
@@ -18,5 +21,9 @@ public abstract class WebException extends RuntimeException {
 
     public String getLogref() {
         return this.logref;
+    }
+
+    public String getRedirect() {
+        return this.redirect;
     }
 }

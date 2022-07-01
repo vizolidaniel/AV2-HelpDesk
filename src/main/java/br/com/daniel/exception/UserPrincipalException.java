@@ -4,6 +4,10 @@ import org.springframework.http.HttpStatus;
 
 public class UserPrincipalException extends WebException {
     public UserPrincipalException() {
-        super("E-mail ou senha inválidos", "unauthorized", HttpStatus.UNAUTHORIZED);
+        this(null);
+    }
+
+    public UserPrincipalException(final String redirect) {
+        super("E-mail ou senha inválidos", "unauthorized", HttpStatus.UNAUTHORIZED, redirect);
     }
 }

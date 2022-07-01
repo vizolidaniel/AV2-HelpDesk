@@ -27,4 +27,17 @@ public class PasswordUtils {
             return false;
         }
     }
+
+    public static String hash(final String rawPassword) {
+        if (!StringUtils.hasText(rawPassword))
+            return "";
+        try {
+            final MessageDigest md5 = MessageDigest.getInstance("MD5");
+            md5.update(rawPassword.getBytes(StandardCharsets.UTF_8));
+            return new BigInteger(1, md5.digest()).toString(HEXADECIMAL);
+        } catch (Exception ex) {
+            log.error(String.format("error trying to hash password: %s", ex.getMessage()));
+            return "";
+        }
+    }
 }

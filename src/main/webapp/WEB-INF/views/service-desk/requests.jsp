@@ -3,10 +3,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>HelpDesk - PROIBIDO</title>
+<title>HelpDesk - Chamados</title>
 </head>
 <body>
-    <%@include file="includes/nav.jsp"%>
-	<p>Acesso Proibido</p>
+    <%@include file="../includes/nav.jsp"%>
+	<p>Chamados</p>
 </body>
 </html>

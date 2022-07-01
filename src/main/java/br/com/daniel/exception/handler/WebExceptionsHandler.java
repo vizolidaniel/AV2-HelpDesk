@@ -1,6 +1,6 @@
 package br.com.daniel.exception.handler;
 
-import br.com.daniel.exception.UserPrincipalException;
+import br.com.daniel.exception.WebException;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.springframework.ui.Model;
@@ -29,10 +29,14 @@ public class WebExceptionsHandler {
         res.sendRedirect(req.getRequestURI());
     }
 
-    @ExceptionHandler(UserPrincipalException.class)
-    public String handleWrongUsernameOrPassword(final UserPrincipalException ex, final HttpSession session) {
+    @ExceptionHandler(WebException.class)
+    public void handleWebException(
+            final WebException ex,
+            final HttpSession session,
+            final HttpServletResponse res
+    ) throws IOException, ServletException {
         session.setAttribute("message", ex.getMessage());
-        return "/login";
+        res.sendRedirect(ex.getRedirect());
     }
 
     @ExceptionHandler(Exception.class)
