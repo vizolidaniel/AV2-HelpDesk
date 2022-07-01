@@ -7,6 +7,6 @@
 </head>
 <body>
     <%@include file="includes/nav.jsp"%>
-	<p>Bem Vindo!</p>
+	<p>Service Desk</p>
 </body>
 </html>

@@ -2,24 +2,32 @@ package br.com.daniel.security.domain;
 
 import br.com.daniel.domain.User;
 
-import java.util.Date;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserPrincipal extends User {
     private final Set<Role> roles;
 
-    public UserPrincipal(final String id, final Date createdAt, final String createdBy, final Set<Role> roles) {
-        super(id, createdAt, createdBy);
-        this.roles = roles;
-    }
-
-    public UserPrincipal(String createdBy, final Set<Role> roles) {
-        super(createdBy);
+    public UserPrincipal(final User user, final Set<Role> roles) {
+        super(
+                user.getId(),
+                user.getCreatedAt(),
+                user.getCreatedBy(),
+                user.getUpdatedAt(),
+                user.getUpdatedBy(),
+                user.getName(),
+                user.getEmail(),
+                user.getPassword()
+        );
         this.roles = roles;
     }
 
     public Set<Role> getRoles() {
         return this.roles;
+    }
+
+    public Set<String> listRoles() {
+        return this.roles.stream().map(Role::getRole).collect(Collectors.toSet());
     }
 
     @Override

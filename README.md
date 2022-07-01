@@ -143,19 +143,23 @@ class Role {
     +getRole() String
 }
 
-class UserPrincipal {
-    -Set~Role~ roles
+class UserRole {
+    -String userId
+    -String roleId
 
-    +UserPrincipal(String id, Date createdAt, String createdBy, Set~Role~ roles)
+    +UserRole(String id, Date createdAt,  String createdBy, Date updatedAt,
+            String updatedBy, String userId, String roleId)
 
-    +UserPrincipal(String createdBy, Set~Role~ roles)
+    +UserRole(String createdBy, String userId, String roleId)
 
-    +getRoles() Set~Role~
+    +getUserId() String
+
+    + getRoleId() String
 }
+
 
 Entity <|.. User
 Entity <|.. Role
-User <|-- UserPrincipal
-Role *-- UserPrincipal
+Entity <|.. UserRole
 
 ```

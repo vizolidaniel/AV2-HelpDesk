@@ -10,12 +10,22 @@ public abstract class Entity {
     private final String createdBy;
     private String updatedBy;
 
-    public Entity(final String id, final Date createdAt, final String createdBy) {
+    public Entity(
+            final String id,
+            final Date createdAt,
+            final String createdBy,
+            final Date updatedAt,
+            final String updatedBy
+    ) {
         this.id = id;
         this.createdAt = createdAt;
-        this.updatedAt = createdAt;
+        this.updatedAt = updatedAt;
         this.createdBy = createdBy;
-        this.updatedBy = createdBy;
+        this.updatedBy = updatedBy;
+    }
+
+    public Entity(final String id, final Date createdAt, final String createdBy) {
+        this(id, createdAt, createdBy, createdAt, createdBy);
     }
 
     public Entity(final String createdBy) {

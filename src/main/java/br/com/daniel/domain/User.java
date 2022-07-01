@@ -7,12 +7,41 @@ public class User extends Entity {
     private String email;
     private String password;
 
-    public User(final String id, final Date createdAt, final String createdBy) {
-        super(id, createdAt, createdBy);
+    public User(
+            final String id,
+            final Date createdAt,
+            final String createdBy,
+            final Date updatedAt,
+            final String updatedBy,
+            final String name,
+            final String email,
+            final String password
+    ) {
+        super(id, createdAt, createdBy, updatedAt, updatedBy);
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 
-    public User(final String createdBy) {
+    public User(
+            final String id,
+            final Date createdAt,
+            final String createdBy,
+            final String name,
+            final String email,
+            final String password
+    ) {
+        super(id, createdAt, createdBy);
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    public User(final String createdBy, final String name, final String email, final String password) {
         super(createdBy);
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 
     public String getName() {
