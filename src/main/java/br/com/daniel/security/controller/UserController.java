@@ -2,26 +2,27 @@ package br.com.daniel.security.controller;
 
 import br.com.daniel.annotations.Authorized;
 import br.com.daniel.exception.CanNotSelfDeleteException;
-import br.com.daniel.exception.MissingParamException;
 import br.com.daniel.model.Response;
 import br.com.daniel.security.domain.Role;
 import br.com.daniel.security.domain.User;
 import br.com.daniel.security.domain.UserPrincipal;
+import br.com.daniel.security.model.dto.UserDTO;
+import br.com.daniel.security.model.validation.UserCreateValidation;
+import br.com.daniel.security.model.validation.UserUpdateValidation;
 import br.com.daniel.security.service.RoleService;
 import br.com.daniel.security.service.UserService;
+import br.com.daniel.utils.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 @Authorized(roles = "ADMIN")
@@ -71,92 +72,44 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public void update(final HttpServletRequest req, final HttpServletResponse res, final HttpSession session) throws IOException {
-        final Map<String, String[]> params = req.getParameterMap();
-        final AtomicReference<String> idRef = new AtomicReference<>(null);
-        final AtomicReference<String> nameRef = new AtomicReference<>(null);
-        final AtomicReference<String> emailRef = new AtomicReference<>(null);
-        final AtomicReference<String> passwordRef = new AtomicReference<>(null);
-        final AtomicReference<Set<Role>> rolesRef = new AtomicReference<>(new HashSet<>());
+    public String update(final HttpSession session, @ModelAttribute final UserDTO dto) throws IOException {
+        UserUpdateValidation.validate(dto);
 
-        params.forEach((key, values) -> {
-            switch (key) {
-                case "id":
-                    idRef.set(values[0]);
-                    break;
-                case "nome":
-                    nameRef.set(values[0]);
-                    break;
-                case "email":
-                    emailRef.set(values[0]);
-                    break;
-                case "senha":
-                    passwordRef.set(values[0]);
-                    break;
-                case "roles":
-                    final Set<String> rolesIds = Arrays.stream(values).collect(Collectors.toSet());
-                    final Set<Role> gotRoles = this.roleService.findRolesByIds(rolesIds);
-                    rolesRef.set(gotRoles);
-                    break;
-            }
-        });
+        final UserPrincipal loggedUser = Principal.extract();
+        final UserPrincipal user = this.service.findUserById(dto.getId());
 
-        final Set<String> missing = new HashSet<>();
-
-        final String id = idRef.get();
-        if (!StringUtils.hasText(id)) missing.add("id");
-
-        final String name = nameRef.get();
-        if (!StringUtils.hasText(name)) missing.add("nome");
-
-        final String email = emailRef.get();
-        if (!StringUtils.hasText(email)) missing.add("e-mail");
-
-        final String password = passwordRef.get();
-        if (!StringUtils.hasText(password)) missing.add("senha");
-
-        final Set<Role> roles = rolesRef.get();
-        if (roles.isEmpty()) missing.add("permissões");
-
-        if (!missing.isEmpty()) throw new MissingParamException(missing, String.format("/users/update/%s", id));
-
-        final UserPrincipal loggedUser = (UserPrincipal) session.getAttribute("principal");
-        final UserPrincipal user = this.service.findUserById(id);
+        final Set<Role> gotRoles = this.roleService.findRolesByIds(dto.getRoles());
 
         final UserPrincipal updatingUser = new UserPrincipal(
                 new User(
-                        id,
+                        dto.getId(),
                         user.getCreatedAt(),
                         user.getCreatedBy(),
                         new Date(),
-                        loggedUser.getEmail(),
-                        name,
-                        email,
-                        password
+                        loggedUser.getId(),
+                        dto.getName(),
+                        dto.getEmail(),
+                        dto.getPassword()
                 ),
-                roles
+                gotRoles
         );
 
         this.service.update(updatingUser);
 
         session.setAttribute("message", "Usuário Atualizado com Sucesso!");
 
-        res.sendRedirect("/users");
+        return "redirect:/users";
     }
 
     @GetMapping("/delete/{id}")
-    public void delete(
-            @PathVariable(name = "id") final String id,
-            HttpSession session,
-            HttpServletResponse response
-    ) throws IOException {
-        final UserPrincipal loggedUser = (UserPrincipal) session.getAttribute("principal");
+    public String delete(@PathVariable(name = "id") final String id, final HttpSession session) {
+        final UserPrincipal loggedUser = Principal.extract();
         if (loggedUser.getId().equals(id)) throw new CanNotSelfDeleteException();
 
         this.service.deleteUser(id);
 
         session.setAttribute("message", "Usuário removido!");
-        response.sendRedirect("/users");
+        return "redirect:/users";
     }
 
     @GetMapping("/create")
@@ -169,64 +122,27 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public void create(final HttpServletRequest req, final HttpServletResponse res, final HttpSession session) throws IOException {
-        final Map<String, String[]> params = req.getParameterMap();
-        final AtomicReference<String> nameRef = new AtomicReference<>(null);
-        final AtomicReference<String> emailRef = new AtomicReference<>(null);
-        final AtomicReference<String> passwordRef = new AtomicReference<>(null);
-        final AtomicReference<Set<Role>> rolesRef = new AtomicReference<>(new HashSet<>());
+    public String create(final HttpSession session, @ModelAttribute final UserDTO dto) throws IOException {
+        UserCreateValidation.validate(dto);
 
-        params.forEach((key, values) -> {
-            switch (key) {
-                case "nome":
-                    nameRef.set(values[0]);
-                    break;
-                case "email":
-                    emailRef.set(values[0]);
-                    break;
-                case "senha":
-                    passwordRef.set(values[0]);
-                    break;
-                case "roles":
-                    final Set<String> rolesIds = Arrays.stream(values).collect(Collectors.toSet());
-                    final Set<Role> gotRoles = this.roleService.findRolesByIds(rolesIds);
-                    rolesRef.set(gotRoles);
-                    break;
-            }
-        });
+        final UserPrincipal loggedUser = Principal.extract();
 
-        final Set<String> missing = new HashSet<>();
-
-        final String name = nameRef.get();
-        if (!StringUtils.hasText(name)) missing.add("nome");
-
-        final String email = emailRef.get();
-        if (!StringUtils.hasText(email)) missing.add("e-mail");
-
-        final String password = passwordRef.get();
-        if (!StringUtils.hasText(password)) missing.add("senha");
-
-        final Set<Role> roles = rolesRef.get();
-        if (roles.isEmpty()) missing.add("permissões");
-
-        if (!missing.isEmpty()) throw new MissingParamException(missing, "/users/create");
-
-        final UserPrincipal loggedUser = (UserPrincipal) session.getAttribute("principal");
+        final Set<Role> gotRoles = this.roleService.findRolesByIds(dto.getRoles());
 
         final UserPrincipal creatingUser = new UserPrincipal(
                 new User(
-                        loggedUser.getEmail(),
-                        name,
-                        email,
-                        password
+                        loggedUser.getId(),
+                        dto.getName(),
+                        dto.getEmail(),
+                        dto.getPassword()
                 ),
-                roles
+                gotRoles
         );
 
         this.service.create(creatingUser);
 
         session.setAttribute("message", "Usuário Criado com Sucesso!");
 
-        res.sendRedirect("/users");
+        return "redirect:/users";
     }
 }

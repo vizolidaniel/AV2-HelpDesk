@@ -12,11 +12,11 @@ public class ErrorController {
 
     @GetMapping
     public String error() {
-        return "error";
+        return "errors/index";
     }
 
     @GetMapping("/forbidden")
     public String forbidden() {
-        return "forbidden";
+        return "errors/forbidden";
     }
 };

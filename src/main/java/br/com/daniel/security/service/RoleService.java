@@ -2,16 +2,16 @@ package br.com.daniel.security.service;
 
 import br.com.daniel.model.Response;
 import br.com.daniel.security.domain.Role;
-import br.com.daniel.security.repository.RoleRepository;
+import br.com.daniel.security.dao.RoleDAO;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
 @Service
 public class RoleService {
-    private final RoleRepository repository;
+    private final RoleDAO repository;
 
-    public RoleService(final RoleRepository repository) {
+    public RoleService(final RoleDAO repository) {
         this.repository = repository;
     }
 

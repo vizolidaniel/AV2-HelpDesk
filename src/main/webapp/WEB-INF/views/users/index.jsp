@@ -38,23 +38,10 @@
 </script>
 </head>
 <body>
-    <%
-        Object param = session.getAttribute("message");
-        if (param != null) {
-            %>
-                <div>
-                    <% String message = (String) param; %>
-                    <p style="color: red;"><%= message %></p>
-                </div>
-            <%
-        }
-    %>
-    <% session.removeAttribute("message"); %>
+    <%@include file="../includes/message.jsp"%>
     <%@include file="../includes/nav.jsp"%>
-    <div class="users-header">
-        <h1>Usuários</h1>
-    	<a href="/users/create">Cadastrar Novo</a>
-    </div>
+    <%String usersHeaderTitle="Usuários";%>
+    <%@include file="header.jsp"%>
 
     <div>
         <table>
@@ -85,13 +72,6 @@
         </div>
 	</div>
 	<style>
-	    .users-header {
-	        display: flex;
-	        flex-direction: column;
-	        padding: 0.5rem;
-            margin: 2rem 2rem;
-            background-color: #f9f9f9;
-	    }
 	    .page-controls {
 	        margin: auto;
 	        width: 8rem;

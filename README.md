@@ -153,9 +153,41 @@ class UserRole {
     + getRoleId() String
 }
 
+class ServiceRequestStatus {
+    +OPEN,
+    +CLOSED
+}
+<<enumeration>> ServiceRequestStatus
+
+class ServiceRequest {
+    -String description
+    -ServiceRequestStatus status
+
+    +ServiceRequest(
+            String id,
+            Date createdAt,
+            String createdBy,
+            Date updatedAt,
+            String updatedBy,
+            String description,
+            ServiceRequestStatus status
+    )
+
+    +ServiceRequest(String createdBy, String description, ServiceRequestStatus status)
+
+    +getDescription() String
+
+    +setDescription(String description)
+
+    +getStatus() ServiceRequestStatus
+
+    +setStatus(ServiceRequestStatus status)
+}
 
 Entity <|.. User
 Entity <|.. Role
 Entity <|.. UserRole
+Entity <|.. ServiceRequest
+ServiceRequest .. ServiceRequestStatus
 
 ```

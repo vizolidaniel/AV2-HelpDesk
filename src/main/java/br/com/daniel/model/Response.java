@@ -122,21 +122,21 @@ public class Response<T> {
             }
 
             public Results<T> page(final int page) {
-                if (page < 1) throw new PageableException("page must be greater then 0");
+                if (page < 1) throw new PageableException("page must be greater then 0", "/");
 
                 this.response.page = page;
                 return this;
             }
 
             public Results<T> size(final int size) {
-                if (size < 1) throw new PageableException("size must be greater then 0");
+                if (size < 1) throw new PageableException("size must be greater then 0", "/");
 
                 this.response.size = size;
                 return this;
             }
 
             public Results<T> total(final long total) {
-                if (total < 0) throw new PageableException("total must be a positive number");
+                if (total < 0) throw new PageableException("total must be a positive number", "/");
 
                 this.response.total = total;
                 return this;

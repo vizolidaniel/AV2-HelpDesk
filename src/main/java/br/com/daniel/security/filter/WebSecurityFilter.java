@@ -2,20 +2,21 @@ package br.com.daniel.security.filter;
 
 import br.com.daniel.annotations.Authorized;
 import br.com.daniel.annotations.Unsecured;
-import br.com.daniel.security.domain.Role;
+import br.com.daniel.exception.ForbiddenException;
 import br.com.daniel.security.domain.UserPrincipal;
+import br.com.daniel.security.permissions.ViewRoles;
 import br.com.daniel.security.service.UserService;
+import br.com.daniel.utils.Principal;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -58,57 +59,75 @@ public class WebSecurityFilter implements HandlerInterceptor {
         return new HashSet<>();
     }
 
-    private static UserPrincipal principal() {
-        final Object principal = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                .getRequest()
-                .getSession()
-                .getAttribute("principal");
-        if (principal != null) return (UserPrincipal) principal;
-        return null;
+    private static void validatePermissions(HandlerMethod handler, HttpServletRequest req) {
+        try {
+            final Set<String> authorizedRoles = authorizedRoles(handler);
+
+            final Set<String> authorizationMethods = authorizedRoles
+                    .stream()
+                    .filter(auth -> auth.startsWith("#"))
+                    .map(auth -> auth.replace("#", ""))
+                    .collect(toSet());
+
+            if (!authorizationMethods.isEmpty()) {
+                if (authorizationMethods.size() > 1 || authorizedRoles.size() > 1)
+                    throw new RuntimeException(String.format(
+                            "Só é permitido apenas um método de validação de permissão: %s",
+                            req.getRequestURI()
+                    ));
+                Method authorizationMethod = ViewRoles.class.getDeclaredMethod(new ArrayList<>(authorizationMethods).get(0));
+                boolean authorized = (boolean) authorizationMethod.invoke(ViewRoles.class);
+
+                if (!authorized) throw new RuntimeException("Você não tem permissões para este recurso");
+
+                return;
+            }
+
+            final Set<String> loggedUserRoles = Principal.extract().listRoles();
+
+            log.info(String.format("Permissões do recurso: %s", join(",", authorizedRoles)));
+            log.info(String.format("Permissões do usu´rio: %s", String.join(",", loggedUserRoles)));
+
+            if (loggedUserRoles.containsAll(authorizedRoles)) {
+                log.info("o usuario tem todas as permissoes necessarias");
+                return;
+            }
+
+            log.info("o usuario nao tem todas as permissoes necessarias");
+        } catch (Exception ex) {
+            final String error = String.format("Erro ao tentar validar permissões: %s", ex.getMessage());
+            log.error(error);
+            throw new ForbiddenException(error);
+        }
+        throw new ForbiddenException("Você não tem permissões para este recurso");
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        if (handler instanceof HandlerMethod)
-            return this.handle(request, response, (HandlerMethod) handler);
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        if (handler instanceof HandlerMethod) return this.handle(request, (HandlerMethod) handler);
         return true;
     }
 
-    private boolean handle(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) throws IOException {
+    private boolean handle(HttpServletRequest request, HandlerMethod handler) {
         if (isUnsecured(handler)) {
             log.info(String.format("url sem protecao: %s", request.getRequestURI()));
             return true;
         }
 
-        final UserPrincipal principal = principal();
-        if (principal != null && this.principalStillValid(principal)) {
+        final UserPrincipal principal = Principal.extract();
+        if (this.principalStillValid(principal)) {
             log.info(String.format("usuario logado: %s", principal.getEmail()));
 
             if (isUnderAuthorization(handler)) {
-                final Set<String> authorizedRoles = authorizedRoles(handler);
-                log.info(String.format("validando permissoes de usuario: %s", join(",", authorizedRoles)));
-                log.info(String.format(
-                        "permissoes do usuario: %s",
-                        principal.getRoles().stream().map(Role::getRole).collect(Collectors.joining(","))
-                ));
-
-                if (principal.getRoles().stream().map(Role::getRole).collect(toSet()).containsAll(authorizedRoles)) {
-                    log.info("o usuario tem todas as permissoes necessarias");
-                    return true;
-                }
-
-                log.info("o usuario nao tem todas as permissoes necessarias");
-
-                response.sendRedirect("/error/forbidden");
-                return false;
+                validatePermissions(handler, request);
             }
 
             return true;
         }
 
+        Principal.invalidate();
         log.info("deslogado, redirecionando para login");
 
-        response.sendRedirect("/login");
         return false;
     }
 

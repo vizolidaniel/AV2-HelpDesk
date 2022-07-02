@@ -40,9 +40,13 @@ public class WebExceptionsHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public String handleUncaughtException(final Exception ex, final Model model) {
+    public void handleUncaughtException(
+            final Exception ex,
+            final HttpSession session,
+            final HttpServletResponse res
+    ) throws IOException {
         log.error("General Internal Error", ex);
-        model.addAttribute("message", ex.getMessage());
-        return "/error";
+        session.setAttribute("message", ex.getMessage());
+        res.sendRedirect("/error");
     }
 }

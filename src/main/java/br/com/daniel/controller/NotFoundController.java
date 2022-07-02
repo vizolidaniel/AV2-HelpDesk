@@ -19,6 +19,6 @@ public class NotFoundController {
     public void handle(final HttpServletRequest req, final HttpServletResponse res) throws IOException {
         log.info(String.format("pagina nao encontrada: %s", req.getRequestURI()));
 
-        res.sendRedirect("/login");
+        res.sendRedirect("/");
     }
 }

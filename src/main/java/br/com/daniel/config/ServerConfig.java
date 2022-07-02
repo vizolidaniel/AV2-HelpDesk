@@ -25,6 +25,7 @@ public class ServerConfig {
                 .orElse(Configs.SERVER_DEFAULT_PORT);
 
         server.setPort(webPort);
+        server.setBaseDir("./.tomcat");
 
         final String webappLocation = new File("src/main/webapp").getAbsolutePath();
 

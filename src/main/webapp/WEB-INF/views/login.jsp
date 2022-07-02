@@ -14,18 +14,7 @@
 </script>
 </head>
 <body>
-    <%
-        Object param = session.getAttribute("message");
-        if (param != null) {
-            %>
-                <div>
-                    <% String message = (String) param; %>
-                    <p style="color: red;"><%= message %></p>
-                </div>
-            <%
-        }
-    %>
-    <% session.removeAttribute("message"); %>
+    <%@include file="includes/message.jsp"%>
 	<div>
 	    <form id="form" method="POST" action="/login">
 	        <input type="email" placeholder="E-mail" id="email" name="email" />
