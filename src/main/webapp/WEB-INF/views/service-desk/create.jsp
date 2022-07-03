@@ -3,7 +3,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>HelpDesk - Chamados</title>
+<script type="text/javascript" src="/resources/scripts.js" ></script>
+<link rel="stylesheet" type="text/css" href="/resources/styles.css">
 <script>
     var submit = function() {
         document.getElementById("form").submit();
@@ -20,24 +23,10 @@
         <form id="form" method="POST" action="/requests/create">
             <fieldset>
                 <label for="description">Descrição:</label>
-                <textarea id="description" name="description" ></textarea>
+                <textarea id="description" name="description" maxlength="2048" ></textarea>
             </fieldset>
         </form>
         <button type="button" onclick="submit()">Abrir</button>
     </div>
-    <style>
-        .requests-create fieldset {
-            border: none;
-            display: flex;
-            flex-direction: column;
-        }
-        .requests-create textarea {
-            min-width: 100%;
-            width: 100%;
-            max-width: 50rem;
-            max-height: 20.5rem;
-            min-height: 20.5rem;
-        }
-    </style>
 </body>
 </html>

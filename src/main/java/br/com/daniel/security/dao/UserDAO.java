@@ -1,10 +1,9 @@
 package br.com.daniel.security.dao;
 
-import br.com.daniel.exception.UserUpdateException;
+import br.com.daniel.exception.UpdateException;
 import br.com.daniel.model.Response;
-import br.com.daniel.security.domain.User;
 import br.com.daniel.security.dao.statements.UserDAOStatements;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.daniel.security.domain.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 public class UserDAO {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public UserDAO(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -127,9 +125,9 @@ public class UserDAO {
                 }
                 ps.setString(updatingUser.size() + 1, user.getId());
             });
-            if (updatedRows < 1) throw new UserUpdateException("Nenhuma informação a atualizar", "/users");
+            if (updatedRows < 1) throw new UpdateException("Nenhuma informação a atualizar", "/users");
         } catch (Exception ex) {
-            throw new UserUpdateException(ex.getMessage(), "/users");
+            throw new UpdateException(ex.getMessage(), "/users");
         }
     }
 
@@ -139,9 +137,9 @@ public class UserDAO {
                     UserDAOStatements.DELETE_BY_ID,
                     ps -> ps.setString(1, id)
             );
-            if (updatedRows < 1) throw new UserUpdateException("Nenhuma informação de usuário a deletar", "/users");
+            if (updatedRows < 1) throw new UpdateException("Nenhuma informação de usuário a deletar", "/users");
         } catch (Exception ex) {
-            throw new UserUpdateException(ex.getMessage(), "/users");
+            throw new UpdateException(ex.getMessage(), "/users");
         }
     }
 
@@ -180,9 +178,9 @@ public class UserDAO {
                         ps.setString(i + 1, (String) value);
                 }
             });
-            if (updatedRows < 1) throw new UserUpdateException("Usuário não foi criado", "/users");
+            if (updatedRows < 1) throw new UpdateException("Usuário não foi criado", "/users");
         } catch (Exception ex) {
-            throw new UserUpdateException(ex.getMessage(), "/users");
+            throw new UpdateException(ex.getMessage(), "/users");
         }
     }
 }

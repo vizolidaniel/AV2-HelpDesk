@@ -37,7 +37,7 @@ mvn clean package glassfish:undeploy
 heroku login && mvn clean package heroku:deploy-war
 ```
 
-Obs.: O deploy remoto só ocorre quando você tem o Heroku CLI instalado localmente e devidamente logado via `heroku login`. É possível trocar o nome da aplicação para deploy dentro de `pom.xml > build > plugins > plugin > heroku-maven-plugin > configuration > appName`, este nome é o prefixo disponível para o Heroku publico, exemplo: se appName for `teste-web-app`, o nome de dominio da aplicação será `teste-web-app.heroku.app`
+Obs.: O deploy remoto só ocorre quando você tem o Heroku CLI instalado localmente e devidamente logado via `heroku login`. É possível trocar o nome da aplicação para deploy dentro de `pom.xml > build > plugins > plugin > heroku-maven-plugin > configuration > appName`, este nome é o prefixo disponível para o Heroku +o, exemplo: se appName for `teste-web-app`, o nome de dominio da aplicação será `teste-web-app.heroku.app`
 
 ## FAQ
 
@@ -182,12 +182,32 @@ class ServiceRequest {
     +getStatus() ServiceRequestStatus
 
     +setStatus(ServiceRequestStatus status)
+
+    +setAnalyzedBy(String analyzedBy)
+
+    +getAnalyzedByBy() String
 }
+
+class ServiceRequestComment {
+    -String comment
+
+    +ServiceRequestComment(String createdBy, String comment)
+
+    +getComment() String
+    +getServiceRequestsId() String
+}
+
 
 Entity <|.. User
 Entity <|.. Role
 Entity <|.. UserRole
 Entity <|.. ServiceRequest
+Entity <|.. ServiceRequestComment
+
+UserRole "*" .. "*" User
+UserRole "*" .. "*" Role
+
 ServiceRequest .. ServiceRequestStatus
+ServiceRequestComment "*" .. "1" ServiceRequest
 
 ```

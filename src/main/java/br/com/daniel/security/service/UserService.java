@@ -4,11 +4,10 @@ import br.com.daniel.exception.TooLessAdminsException;
 import br.com.daniel.exception.UserNotFoundException;
 import br.com.daniel.exception.UserPrincipalException;
 import br.com.daniel.model.Response;
-import br.com.daniel.security.domain.UserPrincipal;
 import br.com.daniel.security.dao.UserPrincipalDAO;
+import br.com.daniel.security.domain.UserPrincipal;
 import br.com.daniel.utils.Base64Utils;
 import br.com.daniel.utils.PasswordUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -21,7 +20,6 @@ public class UserService {
     private static final int THIRTY_MINUTES = 1800;
     private final UserPrincipalDAO repository;
 
-    @Autowired
     public UserService(final UserPrincipalDAO repository) {
         this.repository = repository;
     }

@@ -12,7 +12,6 @@ import br.com.daniel.security.model.validation.UserUpdateValidation;
 import br.com.daniel.security.service.RoleService;
 import br.com.daniel.security.service.UserService;
 import br.com.daniel.utils.Principal;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +30,6 @@ public class UserController {
     private final UserService service;
     private final RoleService roleService;
 
-    @Autowired
     public UserController(final UserService service, final RoleService roleService) {
         this.service = service;
         this.roleService = roleService;

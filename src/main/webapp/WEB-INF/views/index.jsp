@@ -5,6 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>HelpDesk - Home</title>
 </head>
 <body>
@@ -23,13 +24,6 @@
                 %>
                     <div class="item">
                         <a href="/requests">Chamados</a>
-                    </div>
-                <%
-            }
-            if (ViewRoles.canViewSelfRequests()) {
-                %>
-                    <div class="item">
-                        <a href="/requests/my">Meus Chamados</a>
                     </div>
                 <%
             }

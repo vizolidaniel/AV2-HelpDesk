@@ -15,11 +15,6 @@
             <li><a href="/requests">Chamados</a></li>
             <%
         } %>
-        <% if (ViewRoles.canViewSelfRequests()) {
-            %>
-            <li><a href="/requests/my">Meus Chamados</a></li>
-            <%
-        } %>
         <li><a href="/logout">Logout</a></li>
     </ul>
     <style>

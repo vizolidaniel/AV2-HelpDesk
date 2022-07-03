@@ -1,9 +1,8 @@
 package br.com.daniel.security.dao;
 
-import br.com.daniel.exception.UserUpdateException;
-import br.com.daniel.security.model.UserRole;
+import br.com.daniel.exception.UpdateException;
 import br.com.daniel.security.dao.statements.UserRoleDAOStatements;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.daniel.security.model.UserRole;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 public class UserRoleDAO {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public UserRoleDAO(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -46,9 +44,9 @@ public class UserRoleDAO {
                     UserRoleDAOStatements.DELETE_BY_USER_ID,
                     ps -> ps.setString(1, userId)
             );
-            if (updatedRows < 1) throw new UserUpdateException("Nenhuma informação de role a atualizar", "/users");
+            if (updatedRows < 1) throw new UpdateException("Nenhuma informação de role a atualizar", "/users");
         } catch (Exception ex) {
-            throw new UserUpdateException(ex.getMessage(), "/users");
+            throw new UpdateException(ex.getMessage(), "/users");
         }
     }
 
@@ -90,9 +88,9 @@ public class UserRoleDAO {
                             ps.setString(i + 1, (String) value);
                     }
                 });
-                if (updatedRows < 1) throw new UserUpdateException("Nenhuma informação de permissão a iriar", "/users");
+                if (updatedRows < 1) throw new UpdateException("Nenhuma informação de permissão a iriar", "/users");
             } catch (Exception ex) {
-                throw new UserUpdateException(ex.getMessage(), "/users");
+                throw new UpdateException(ex.getMessage(), "/users");
             }
         });
     }

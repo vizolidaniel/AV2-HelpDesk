@@ -5,6 +5,7 @@ import java.util.Date;
 public class ServiceRequest extends Entity {
     private String description;
     private ServiceRequestStatus status;
+    private String analyzedBy;
 
     public ServiceRequest(
             final String id,
@@ -13,17 +14,20 @@ public class ServiceRequest extends Entity {
             final Date updatedAt,
             final String updatedBy,
             final String description,
-            final ServiceRequestStatus status
+            final ServiceRequestStatus status,
+            final String analyzedBy
     ) {
         super(id, createdAt, createdBy, updatedAt, updatedBy);
         this.description = description;
         this.status = status;
+        this.analyzedBy = analyzedBy;
     }
 
     public ServiceRequest(final String createdBy, final String description) {
         super(createdBy);
         this.description = description;
         this.status = ServiceRequestStatus.OPEN;
+        this.analyzedBy = createdBy;
     }
 
     public String getDescription() {
@@ -40,6 +44,14 @@ public class ServiceRequest extends Entity {
 
     public void setStatus(final ServiceRequestStatus status) {
         this.status = status;
+    }
+
+    public String getAnalyzedBy() {
+        return this.analyzedBy;
+    }
+
+    public void setAnalyzedBy(String analyzedBy) {
+        this.analyzedBy = analyzedBy;
     }
 
     @Override

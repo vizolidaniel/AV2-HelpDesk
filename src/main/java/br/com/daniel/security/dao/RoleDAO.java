@@ -1,8 +1,7 @@
 package br.com.daniel.security.dao;
 
-import br.com.daniel.security.domain.Role;
 import br.com.daniel.security.dao.statements.RoleDAOStatements;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.daniel.security.domain.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 public class RoleDAO {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public RoleDAO(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
