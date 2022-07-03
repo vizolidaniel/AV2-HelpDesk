@@ -17,7 +17,7 @@ import java.util.Set;
 
 @Service
 public class UserService {
-    private static final int THIRTY_MINUTES = 1800;
+    private static final int THIRTY_DAYS = 30 * 24 * 3600;
     private final UserPrincipalDAO repository;
 
     public UserService(final UserPrincipalDAO repository) {
@@ -36,7 +36,7 @@ public class UserService {
                     .getRequest()
                     .getSession(true);
             session.setAttribute("principal", user);
-            session.setMaxInactiveInterval(THIRTY_MINUTES);
+            session.setMaxInactiveInterval(THIRTY_DAYS);
         } else
             throw new UserPrincipalException();
     }

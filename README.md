@@ -10,7 +10,7 @@ mvn clean package
 
 ### Executar projeto local (Java 1.8) - Execute a partir do terminal
 ```bash
-mvn clean package exec:java -Dexec.mainClass="br.com.daniel.Application"
+mvn clean package && java -jar target/dependency/webapp-runner.jar --port 8090 target/*.war
 ```
 - A aplicação será iniciada na porta `8090`
 - É possível executar a aplicação pressionando o botão de `Run` (play de cor verde) na IDE na classe `Application.java`

@@ -1,9 +1,11 @@
 package br.com.daniel.security.dao;
 
+import br.com.daniel.exception.DatabaseConflictException;
 import br.com.daniel.exception.UpdateException;
 import br.com.daniel.model.Response;
 import br.com.daniel.security.dao.statements.UserDAOStatements;
 import br.com.daniel.security.domain.User;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -126,6 +128,11 @@ public class UserDAO {
                 ps.setString(updatingUser.size() + 1, user.getId());
             });
             if (updatedRows < 1) throw new UpdateException("Nenhuma informação a atualizar", "/users");
+        } catch (DuplicateKeyException dupEx) {
+            throw new DatabaseConflictException(
+                    String.format("Já existe um usuário com este e-mail: %s", user.getEmail()),
+                    String.format("/users/update/%s", user.getId())
+            );
         } catch (Exception ex) {
             throw new UpdateException(ex.getMessage(), "/users");
         }
@@ -179,6 +186,11 @@ public class UserDAO {
                 }
             });
             if (updatedRows < 1) throw new UpdateException("Usuário não foi criado", "/users");
+        } catch (DuplicateKeyException dupEx) {
+            throw new DatabaseConflictException(
+                    String.format("Já existe um usuário com este e-mail: %s", user.getEmail()),
+                    "/users/create"
+            );
         } catch (Exception ex) {
             throw new UpdateException(ex.getMessage(), "/users");
         }
